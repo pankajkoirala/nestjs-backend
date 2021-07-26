@@ -6,7 +6,7 @@ export class CreateAuthDto {
   @IsNotEmpty()
   // @IsNumber()
   @IsString()
-  password: number;
+  password: string;
   @IsNotEmpty()
   @IsString()
   name?: string; //? make optional field in postman
@@ -18,5 +18,5 @@ export class LoginAuthDto {
   @IsNotEmpty()
   // @IsNumber()
   @IsString()
-  password: number;
+  password: string;
 }

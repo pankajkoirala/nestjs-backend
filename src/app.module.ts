@@ -2,8 +2,8 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { MongooseModule } from '@nestjs/mongoose';
-import { TestModule } from './test/test.module';
 import { AuthModule } from './auth/auth.module';
+import { FileUploaderModule } from './file-uploader/file-uploader.module';
 
 @Module({
   imports: [
@@ -14,7 +14,7 @@ import { AuthModule } from './auth/auth.module';
       useFindAndModify: false,
     }),
     AuthModule,
-    TestModule,
+    FileUploaderModule,
   ],
   controllers: [AppController],
   providers: [AppService],

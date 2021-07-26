@@ -5,6 +5,7 @@ import { UpdateAuthDto } from './dto/update-auth.dto';
 import { User } from './entities/auth.entity';
 import { Model } from 'mongoose';
 import { JwtService } from '@nestjs/jwt';
+const bc = require('bcrypt');
 
 @Injectable()
 export class AuthService {
@@ -13,19 +14,28 @@ export class AuthService {
     private JwtService: JwtService,
   ) {}
   async create(createAuthDto: CreateAuthDto) {
-    const p = await new this.userModel(createAuthDto);
+    const { name, email, password } = createAuthDto;
+    const hashpassword = await bc.hash(password, 10);
+    const p = await new this.userModel({
+      name: name,
+      email: email,
+      password: hashpassword,
+    });
 
     return p.save();
   }
   async login(loginAuthDto: LoginAuthDto) {
-    console.log(
-      '🚀 ~ file: auth.service.ts ~ line 12 ~ AuthService ~ create ~ createAuthDto',
-      loginAuthDto,
-    );
     const { email, password } = loginAuthDto;
+
     const user = await this.userModel.findOne({ email: email });
+
     if (user) {
-      return await this.JwtService.sign(JSON.stringify(user));
+      if (await bc.compare(password, user.password)) {
+        const token = await this.JwtService.sign(JSON.stringify(user));
+        return { status: true, message: 'successfully login', token: token };
+      } else {
+        return { status: false, message: 'invalid credentials' };
+      }
     } else {
       throw new UnauthorizedException('invalid credentials');
     }

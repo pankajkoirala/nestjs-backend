@@ -6,10 +6,12 @@ import {
   Patch,
   Param,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateAuthDto, LoginAuthDto } from './dto/create-auth.dto';
 import { UpdateAuthDto } from './dto/update-auth.dto';
+import { JwtAuthGuard } from '../auth-strategy/jwt-auth-guarg';
 
 @Controller('auth')
 export class AuthController {
@@ -24,7 +26,8 @@ export class AuthController {
     return this.authService.login(loginAuthDto);
   }
 
-  @Get()
+  @UseGuards(JwtAuthGuard)
+  @Get('/verify')
   findAll() {
     return this.authService.findAll();
   }
